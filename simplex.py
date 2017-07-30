@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 
-from parse_matrix import parse_problem
-from itertools import combinations
 from functools import reduce
+from itertools import combinations
+from sys import argv
+
 import numpy as np
 
-from sys import argv
+from parse_matrix import parse_problem
 
 
 def has_inverse(matrix):
@@ -73,23 +74,40 @@ class FeasibleBase:
     def is_non_negative(self):  # Do not violate non-negative constraints
         return reduce(lambda total, new: total and new, [b >= 0 for b in self.x_B()])
 
+    def best_entering_column(self):
+        unused_z_coeffs = [(i, c) for i, c in enumerate(self.z_coeffs) if i not in self.b_columns]
+        # Return the index of the highest unused z coefficient
+        return max(unused_z_coeffs, key=lambda tup: tup[1])[0]
+
+    def best_exiting_column(self, entering_column):
+        w = self.B_i * self.b
+        w = [wi[0, 0] for wi in w]
+
+        v = self.B_i * self.a_(entering_column)
+
+        div = [(wi / vi)[0, 0] for wi, vi in zip(w, v)]
+
+        best_min = min([d for d in div if d is not np.inf and d > 0])
+        min_index = div.index(best_min)
+        return self.b_values[min_index]
+
     def answer_string(self):
         zstr = 'z = {}\n'.format(self.z())
 
         basis_i = 0
-        other_vars = []
+        x_vars = []
         for i in range(len(self.z_coeffs)):
             if i in self.b_columns:
-                other_vars.append(self.x_B()[basis_i, 0])
+                x_vars.append(self.x_B()[basis_i, 0])
                 basis_i += 1
             else:
-                other_vars.append(0)
+                x_vars.append(0)
 
-        other_vars = ['x{} = {}'.format(i + 1, v) for i, v in enumerate(other_vars)]
-        return zstr + '\n'.join(other_vars)
+        x_vars = ['x{} = {}'.format(i+1, v) for i, v in enumerate(x_vars)]
+        return zstr + '\n'.join(x_vars)
 
     def __str__(self):
-        return 'z: {}\tx_B: {}'.format(self.z(), self.x_B())
+        return 'z: {}\nx_B: {}'.format(self.z(), self.x_B())
 
     def __repr__(self):
         return str(self)
@@ -101,23 +119,46 @@ class MatrixSimplex:
         self.A = A
         self.b = b
 
-    def doSimplex(self):
-        # Find all invertible Bases
+    def swap_columns(self, base, columns):
+        new_column = base.best_entering_column()
+        bad_column = base.best_exiting_column(new_column)
+        columns.append(new_column)
+        columns.remove(bad_column)
+        return columns
+
+    def doSimplex(self, brute_force=False):
         A_shape = self.A.shape
         B_size = A_shape[0]
         total_cols = A_shape[1]
+        if brute_force:  # This was something I used early on to test my `is_optimal` and `is_non_negative` functions
+            # Find all invertible Bases
+            feasible_bases = [FeasibleBase(self.A, self.b, self.z_coeffs, columns) for columns in
+                              combinations(range(total_cols), B_size) if has_inverse(self.A[:, columns])]
 
-        feasible_bases = [FeasibleBase(self.A, self.b, self.z_coeffs, columns) for columns in
-                          combinations(range(total_cols), B_size) if has_inverse(self.A[:, columns])]
-        feasible_bases = [f for f in feasible_bases if f.is_non_negative()]
+            feasible_bases = [f for f in feasible_bases if f.is_non_negative()]  # Filter out bad bases
+            optimal_bases = [f for f in feasible_bases if f.is_optimal()]  # Filter out suboptimal bases
 
-        feasible_B = [f for f in feasible_bases if f.is_optimal()]
-
-        assert len(feasible_B) == 1
-        return feasible_B[0]
+            assert len(optimal_bases) == 1  # Assert that there is, as expected, 1 possible optimal base
+            return optimal_bases[0]
+        else:  # This is the actual simplex method
+            columns = list(range(total_cols - B_size, total_cols))  # Use the last columns first
+            while True:
+                try:
+                    base = FeasibleBase(self.A, self.b, self.z_coeffs, columns)
+                    if base.is_optimal() and base.is_non_negative():
+                        return base
+                    else:
+                        columns = self.swap_columns(base, columns)
+                except np.linalg.LinAlgError:
+                    columns = self.swap_columns(base, columns)
 
 
 if __name__ == '__main__':
+    if '-h' in argv or len(argv) < 2:
+        with open('README.md', 'r') as readme:
+            print(readme.read())
+            exit(0)
+
     filename = argv[1]
     A, b, z_coeffs = parse_problem(filename)
     simplex = MatrixSimplex(z_coeffs, A, b)

@@ -1,6 +1,40 @@
- 3  1  0   0   0   0
-#x1 x2 s1  s2  s3  s4  b
- 1  1  -1  0   0   0   3
- 3  -1  0  -1  0   0   -1
- 1  0   0  0   1   0   2
- 0  1   0  0   0   1   2
+3   4   0  0   0
+#P  C   S  Pl  W  b
+4   5   1  0   0  320
+1   3   0  1   0  240
+8   12  0  0   1  240
+#
+# Work:
+#
+# 2 Toy Airplanes, Passenger (P) and Cargo (C)
+#
+# z = 3*P + 4*C
+#
+# Constraints are building materials - Steel (S), Plastic (Pl), and Wood (W)
+#
+# Steel (max 20 lbs, or rather, 20*16 = 320 oz):
+# 4*P + 5*C <= 320
+# 4*P + 5*C + S = 320
+# S is excess oz of steel
+#
+# Plastic (max 15 lbs, or rather, 15*16= 240 oz):
+# 1*P + 3*C <= 240
+# 1*P + 3*C + Pl = 240
+# Pl is excess oz of Plastic
+#
+# Wood (max 20 feet, or rather, 20*12 = 240 in):
+# 8*P + 12*C <= 240
+# 8*P + 12*C + W = 240
+# W is excess inches of Wood Strips
+#
+# Answer:
+#
+# z = 90.0
+# x1 = 30.0
+# x2 = 0
+# x3 = 200.0
+# x4 = 210.0
+# x5 = 0
+#
+# So, 30 Passenger planes should be built, and 0 Cargo planes.
+#
