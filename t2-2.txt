@@ -1,7 +1,7 @@
 80  130  0  0  0
 #A  B    a  $  L  b
 1   1    1  0  0  2000
-90  60   0  1  0  150000
+90  60   0  1  0  150100
 1   2    0  0  1  3000
 # Work:
 #
@@ -25,14 +25,19 @@
 #
 #       x3  x5  x3  x4  x5  z  b
 # x1 [[    1.     0.     2.     0.    -1.     0.  1000.]]
-# x4 [[   0.    0. -120.    1.   30.    0.    0.]]
+# x4 [[   0.    0. -120.    1.   30.    0.  100.]]
 # x2 [[    0.     1.    -1.     0.     1.     0.  1000.]]
-# z [[  0.00000000e+00   0.00000000e+00   3.00000000e+01   0.00000000e+00 5.00000000e+01   1.00000000e+00   2.10000000e+05]]
+# z [[  0.00000000e+00   0.00000000e+00   3.00000000e+01   0.00000000e+00
+#     5.00000000e+01   1.00000000e+00   2.10000000e+05]]
 #
 # z = 210000.0
-# x1 = 1000.0 acres of crop A
-# x2 = 1000.0 acres of crop B
-# x3 = 0 excess acres
-# x4 = 0.0 excess dollars
-# x5 = 0 excess person-days of labor
+# x1 = 1000.0
+# x2 = 1000.0
+# x3 = 0
+# x4 = 100.0
+# x5 = 0
+#
+# Explanation:
+# There was no change in the optimal solution after adding $100 to the initial capital.
+# Because of this, it is clear that an person-day of labor is more valuable than a dollar of capital
 #

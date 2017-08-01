@@ -32,10 +32,10 @@ class TableauxSimplex:
 
     def doSimplex(self):
         while not self.is_optimal():
-            # print(self)
+            #print(self)
             smallest = min(self.z_row)
             smallest_col = self.z_row.index(smallest)
-            # print('Pivoting on col', smallest_col)
+            #print('Pivoting on col', smallest_col)
             self.pivot(smallest_col)
         for i, row in enumerate(self.tab):
             if self.b_col[i] < 0:
@@ -46,7 +46,7 @@ class TableauxSimplex:
         b_vals = self.b_col / self.col(p_col)
         b_val_list = [b[0] if b[0] >= 0 else np.inf for b in b_vals.tolist()[:-1]]
         p_row = b_val_list.index(min(b_val_list))
-        # print('Pivoting on row', p_row)
+        #print('Pivoting on row', p_row)
 
         # Normalize to 1
         self.tab[p_row] = self.tab[p_row] / self.tab[p_row, p_col]

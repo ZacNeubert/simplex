@@ -1,0 +1,21 @@
+25  10  0  0
+#L   S    d  b  b
+4    1    1  0  320
+2    1    0  1  160
+# Work:
+#
+# X oz of dough | Profit
+#-----------------------
+#  3000         |  2000
+#  30000        |  2000
+#  300          |  1950
+#  306          |  1965
+#  312          |  1980
+#  324          |  2000  (Has  4  excess  oz  of  dough)
+#  320          |  2000  (Has  0  excess  oz  of  dough)
+#
+# Because @325 oz of dough, there are 4 excess oz of bran, and we have hit the revenue maximum (calculated by setting dough to 30000), 25 extra oz of dough is all that can be added before revenue stops rising.
+#
+# Run `python3 tableaux.py t3-1.txt` for part 1 of this problem
+# Run `python3 tableaux.py t3-2.txt` for part 2 of this problem
+#

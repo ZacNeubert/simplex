@@ -1,0 +1,35 @@
+25  10  0  0
+#L   S    d  b  b
+4    1    1  0  300
+2    1    0  1  160
+# Work:
+#
+# L(arge) and S(mall) bran muffins, limited by:
+#
+# Dough (d) (300 oz):
+# 4L + S <= 300
+# 4L + S + d = 300
+#
+# Bran (br) (160 oz):
+# 2L + 1S <= 160
+# 2L + 1S + br = 160
+#
+# (For the sake of my parser, we'll use whole numbers and measure profits in cents)
+# z = 25L + 10S
+#
+#
+#              x3  x4  x3  x4  z  b
+#       x1 [[  1.    0.    0.5  -0.5   0.   70. ]]
+#       x2 [[  0.   1.  -1.   2.   0.  20.]]
+#       z [[  0.00000000e+00   0.00000000e+00   2.50000000e+00   7.50000000e+00
+#           1.00000000e+00   1.95000000e+03]]
+# 
+#           z = 1950.0 ($19.50 in profits)
+#           x1 = 70.0 (Large muffins produced)
+#           x2 = 20.0 (Small muffins produced)
+#           x3 = 0 (excess dough)
+#           x4 = 0 (excess bran)
+#
+# Run `python3 tableaux.py t3-1.txt` for part 1 of this problem
+# Run `python3 tableaux.py t3-2.txt` for part 2 of this problem
+#
